@@ -4,7 +4,6 @@ import ProgressBar from './components/ProgressBar.vue';
 
 const progressInStore = useProgressStore();
 progressInStore.fill();
-
 </script>
 
 <template>
