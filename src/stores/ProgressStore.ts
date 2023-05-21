@@ -6,23 +6,48 @@ import { IGame } from '@/types';
 
 const defaultState = {
   progress: mock,
+  currentStage: 0,
+  currentGame: 0,
 };
 
 export const useProgressStore = defineStore('ProgressStore', () => {
   // state
-  const progress = useStorage('progress', ref(JSON.parse(JSON.stringify(defaultState.progress))));
+  const progress = useStorage('progress', ref(structuredClone(defaultState.progress)));
+  const currentStage = useStorage('currentStage', ref(structuredClone(defaultState.currentStage)));
+  const currentGame = useStorage('currentGame', ref(structuredClone(defaultState.currentGame)));
 
   // actions
-  function inc(q: number) {
-    this.progress[0].games[0].bestResult += q;
+  function inc(q: number): void {
+    const item = progress.value[currentStage.value].games[currentGame.value];
+    item.bestResult += q;
+
+    if (item.bestResult > 0 && item.isPlayed === false) {
+      item.isPlayed = true;
+    }
   }
 
-  function dec(q: number) {
-    this.progress[0].games[0].bestResult -= q;
+  function dec(q: number): void {
+    const item = progress.value[currentStage.value].games[currentGame.value];
+    item.bestResult -= q;
+
+    if (item.bestResult > 0 && item.isPlayed === false) {
+      item.isPlayed = true;
+    }
+  }
+
+  function changeStage(stage: number) {
+    currentStage.value = stage;
+    pickGame(0);
+  }
+
+  function pickGame(index: number) {
+    currentGame.value = index;
   }
 
   function $reset() {
-    Object.assign(progress.value, JSON.parse(JSON.stringify(defaultState.progress)));
+    progress.value = structuredClone(defaultState.progress);
+    currentStage.value = structuredClone(defaultState.currentStage);
+    currentGame.value = structuredClone(defaultState.currentGame);
   }
 
   // getters
@@ -31,5 +56,5 @@ export const useProgressStore = defineStore('ProgressStore', () => {
     progress.value.flatMap((item) => item.games).reduce((acc: number, curr: IGame) => acc + curr.bestResult, 0),
   );
 
-  return { progress, inc, dec, $reset, segmentsCount, overallScore };
+  return { progress, currentStage, currentGame, inc, dec, changeStage, pickGame, $reset, segmentsCount, overallScore };
 });

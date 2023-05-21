@@ -135,7 +135,6 @@ const indicatorFilled = computed(
       color: #000;
       opacity: 0.5;
     }
-
   }
 }
 </style>

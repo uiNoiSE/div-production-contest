@@ -56,13 +56,18 @@ button {
     border-color: #646cff;
   }
 
-  &:focus,
   &:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
   }
 }
 
 .button {
+  &-select {
+    &--active {
+      border: 1px solid $c-primary;
+    }
+  }
+
   &--danger {
     color: $c-danger;
     border-color: $c-danger;
