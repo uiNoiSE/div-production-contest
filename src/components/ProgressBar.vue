@@ -3,16 +3,17 @@
 import { computed } from 'vue';
 import { useProgressStore } from '@/stores/ProgressStore';
 import Stage from '@components/Stage.vue'
+import { IGame, IStage } from '@/types';
 
 const progressInStore = useProgressStore();
 
 const overallScore = computed((): number =>
   progressInStore.progress
-    .flatMap((item) => item.games)
-    .reduce((acc: number, curr: { name: string; bestResult: number; isPlayed: boolean }) => acc + curr.bestResult, 0),
+    .flatMap((item: IStage) => item.games)
+    .reduce((acc: number, curr: IGame) => acc + curr.bestResult, 0),
 );
 
-const thresholdPoints = computed(() => progressInStore.progress.map((item) => item.thresholdPoints));
+const thresholdPoints = computed(() => progressInStore.progress.map((item: IStage) => item.thresholdPoints));
 const segmentWidth = computed(() =>
   progressInStore.progress[progressInStore.segmentsCount - 1]
     .thresholdPoints / progressInStore.segmentsCount / 10);
@@ -67,7 +68,7 @@ const barCompletion = computed(() => {
 <style lang="scss">
 .progress-bar {
   position: relative;
-  margin: 3em 0;
+  margin: 2em 0 3em;
 
   &__segments {
     position: relative;
@@ -85,7 +86,7 @@ const barCompletion = computed(() => {
     margin: 0;
     border: none;
     background-position-x: 0%;
-    background-size: 200% 100%;
+    background-size: 199.999% 100%;
     background-image: linear-gradient(270deg, $c-primary, $c-primary 50%, $c-gray60 50%, $c-gray60 100%);
     transition: $t-primary;
   }

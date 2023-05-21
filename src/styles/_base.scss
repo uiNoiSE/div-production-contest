@@ -2,6 +2,7 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+  font-size: calc(16px + 0.390625vw);
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -44,8 +45,7 @@ h1 {
 button {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  padding: 0.6em 0.3em;
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
@@ -75,10 +75,14 @@ button {
 }
 
 .card {
-  padding: 2rem;
+  padding: 1.5rem;
   background-color: #636363;
   box-shadow: 0px 4px 50px rgba(0, 0, 0, 0.05);
   border-radius: 50px;
+
+  @media (min-width: 768px) {
+    padding: 3em;
+  }
 }
 
 #app {
@@ -87,15 +91,33 @@ button {
   min-width: 320px;
   width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   text-align: center;
+
+  @media (min-width: 768px) {
+    padding: 3em;
+  }
 }
 
 .button-group {
-  display: flex;
+  display: grid;
+  grid-auto-columns: 1fr;
   justify-content: space-between;
   align-items: center;
   flex-wrap: nowrap;
+  gap: 0.5rem;
+
+  &--can-wrap {
+    grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
+    }
+
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(auto-fit, minmax(15%, 1fr));
+    }
+  }
 }
 
 @media (prefers-color-scheme: light) {

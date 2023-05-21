@@ -1,7 +1,31 @@
-# Vue 3 + Vite
+# Тестовое задание для [Div-production](https://div-production.ru/).
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## О задании
 
-## Recommended IDE Setup
+Целью задания, было создание компонента - прогресс бара, который отображал бы текущий прогресс пользователя.
+Бар делится на сегменты - этапы, со своим количеством очков. В одном этапе может быть несколько игр.
+Общий прогресс складывается из результата игр всех этапов.
+Для простоты тестирования приложения, реализованы кнопки для:
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+- Выбора этапа;
+- Выбора игры этапа;
+- Кнопки изменения прогресса текущей игры этапа;
+- Кнопка полного сброса прогресса.
+
+## Установка
+
+```sh
+cd div-production-contest
+yarn
+yarn dev
+```
+
+## В проекте использовано:
+
+| Dep          | Link                                       |
+| ------------ | ------------------------------------------ |
+| Vue 3 + Vite | [vitejs.dev](https://vitejs.dev/)          |
+| Pinia        | [pinia.vuejs.org](https://pinia.vuejs.org) |
+| VueUse       | [vueuse.org](https://vueuse.org)           |
+
+а также Vue Composition API, **TypeScript** и **SASS(SCSS)**.
