@@ -1,68 +1,35 @@
 import { defineStore } from 'pinia';
+import { useStorage } from '@vueuse/core';
+import { ref, computed } from 'vue';
+import mock from '@/data/mock.json';
+import { IGame } from '@/types';
 
-export const useProgressStore = defineStore('ProgressStore', {
-  state: () => ({
-    progress: [],
-  }),
+const defaultState = {
+  progress: mock,
+};
 
-  actions: {
-    async fill() {
-      this.progress = (await import('@/data/mock.json')).default;
-    },
+export const useProgressStore = defineStore('ProgressStore', () => {
+  // state
+  const progress = useStorage('progress', ref(JSON.parse(JSON.stringify(defaultState.progress))));
 
-    inc(q: number) {
-      this.progress[0].games[0].bestResult += q;
-    },
+  // actions
+  function inc(q: number) {
+    this.progress[0].games[0].bestResult += q;
+  }
 
-    dec(q: number) {
-      this.progress[0].games[0].bestResult -= q;
-    },
-  },
+  function dec(q: number) {
+    this.progress[0].games[0].bestResult -= q;
+  }
 
-  getters: {
-    segmentsCount(state): number {
-      return Object.keys(state.progress).length;
-    },
-    overallScore: (state) =>
-      state.progress.flatMap((item) => item.games).reduce((acc, curr) => acc + curr.bestResult, 0),
-    thresholdPoints: (state) => state.progress.map((item) => item.thresholdPoints),
-    segmentWidth(state) {
-      const width = state.progress[this.segmentsCount - 1]?.thresholdPoints / this.segmentsCount / 10;
-      return width;
-    },
-    barCompletion(): { 'background-position-x': string } {
-      const lowerThreshold = () => {
-        const lower = this.thresholdPoints.findLast((item: number) => item <= this.overallScore);
-        return lower ? lower : 0;
-      };
-      const higherThreshold = (): number => {
-        const higher = this.thresholdPoints.find((item: number) => item >= this.overallScore);
-        return higher ? higher : this.thresholdPoints.at(-1);
-      };
+  function $reset() {
+    Object.assign(progress.value, JSON.parse(JSON.stringify(defaultState.progress)));
+  }
 
-      const filler = () => {
-        const pointsInCurrentSegment = () => {
-          if (this.overallScore >= 0) {
-            return this.overallScore - lowerThreshold();
-          }
-          return 0;
-        };
-        const currentSegmentRange = higherThreshold() - lowerThreshold();
-        const currentSegmentFilled = () => {
-          if (pointsInCurrentSegment && currentSegmentRange) {
-            return (pointsInCurrentSegment() / currentSegmentRange) * this.segmentWidth;
-          }
-          return 0;
-        };
-        const alreadyFilled = this.thresholdPoints.filter((item) => item <= this.overallScore).length;
+  // getters
+  const segmentsCount = computed(() => Object.keys(progress.value).length);
+  const overallScore = computed((): number =>
+    progress.value.flatMap((item) => item.games).reduce((acc: number, curr: IGame) => acc + curr.bestResult, 0),
+  );
 
-        const filledPercentage = (this.segmentWidth * 100 * alreadyFilled) / 100 + currentSegmentFilled();
-
-        return {
-          'background-position-x': `-${filledPercentage}%`,
-        };
-      };
-      return filler();
-    },
-  },
+  return { progress, inc, dec, $reset, segmentsCount, overallScore };
 });

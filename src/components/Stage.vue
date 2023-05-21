@@ -3,33 +3,29 @@ import { PropType, computed } from 'vue';
 import { useProgressStore } from '@/stores/ProgressStore';
 import StarIcon from '@assets/svg/star.svg';
 import Trophy from '@assets/svg/trophy.svg';
+import { IStage } from '@/types';
 const progressInStore = useProgressStore();
 
-interface IStage {
-  name: string;
-  id: number;
-  thresholdPoints: number;
-  games: { name: string; bestResult: number; isPlayed: boolean }[];
-}
-
 const props = defineProps({
-  data: Object as PropType<IStage>
+  data: Object as PropType<IStage>,
+  thresholds: Object as PropType<Array<number>>,
 })
 
 const segmentScore = computed(() => {
   const OS = progressInStore.overallScore;
   const TH = props.data.thresholdPoints;
-  const STH = progressInStore.thresholdPoints;
+  const StageTH = props.thresholds;
   const currentIndex = props.data.id - 1;
 
   const prevThreshold = () => {
     if (currentIndex === 0) {
       return (0);
     }
-    return STH[currentIndex - 1];
+    return StageTH[currentIndex - 1];
   }
 
-  if ((TH >= OS && prevThreshold() < OS) || (OS >= TH && STH.findIndex(item => item === STH.at(-1)) === currentIndex)) {
+  if ((TH >= OS && prevThreshold() < OS) ||
+    (OS >= TH && StageTH.findIndex(item => item === StageTH.at(-1)) === currentIndex)) {
     return `${OS} / ${TH}`
   }
   return TH
@@ -48,9 +44,7 @@ const indicatorFilled = computed(
 
 <template>
   <div class="progress-bar__segment">
-    <!-- {{ props.data.games.every(item => item.isPlayed === true) && progressInStore.overallScore >=
-      props.data.thresholdPoints }} -->
-    <div class="progress-bar__indicator" v-if="progressInStore.thresholdPoints.at(-1) === props.data.thresholdPoints">
+    <div class="progress-bar__indicator" v-if="props.thresholds.at(-1) === props.data.thresholdPoints">
       <Trophy :style="indicatorFilled ? { opacity: 1 } : { opacity: 0 }" />
     </div>
     <div class="progress-bar__indicator" v-else>
@@ -85,7 +79,8 @@ const indicatorFilled = computed(
         line-height: 17px;
         letter-spacing: -0.01em;
 
-        opacity: 0.5;
+        color: #fff;
+        opacity: 0.7;
       }
     }
 
@@ -129,7 +124,18 @@ const indicatorFilled = computed(
     line-height: 17px;
     letter-spacing: -0.01em;
 
-    opacity: 0.5;
+    color: #fff;
+    opacity: 0.7;
+  }
+
+  @media (prefers-color-scheme: light) {
+
+    .progress-bar__segment:first-of-type:before,
+    .progress-bar__threshold {
+      color: #000;
+      opacity: 0.5;
+    }
+
   }
 }
 </style>

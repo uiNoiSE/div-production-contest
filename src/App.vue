@@ -3,7 +3,6 @@ import { useProgressStore } from '@/stores/ProgressStore';
 import ProgressBar from './components/ProgressBar.vue';
 
 const progressInStore = useProgressStore();
-progressInStore.fill();
 </script>
 
 <template>
@@ -20,6 +19,8 @@ progressInStore.fill();
       <button @click="progressInStore.inc(5)"> + 5</button>
       <button @click="progressInStore.inc(50)"> + 50</button>
       <button @click="progressInStore.inc(100)"> + 100</button>
+
+      <button @click="progressInStore.$reset()" class="button--danger"> Reset all progress</button>
     </div>
   </main>
 </template>
